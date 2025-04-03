@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore';
-import { Eye, EyeOff, Mail, MessageSquare, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, MessageSquare, Lock ,Loader2  } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AuthImagePattern from '../Components/AuthImagePattern';
 
@@ -12,9 +12,26 @@ function LoginPage() {
   })
 
   const login = useAuthStore((store) => store.login);
+  const isLoggingIng = useAuthStore((store) => store.isLoggingIng);
 
+  const validateForm = () => {
+   
+    if (!formData.email.trim()) return toast.error("Email is required");
+    if (!/\S+@\S+\.\S+/.test(formData.email))
+      return toast.error("Invalid email format");
+
+    if (!formData.password) return toast.error("Passowrd is required");
+    if (formData.password.length < 6)
+      return toast.error("Password must be greater than 6");
+    return true;
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+    const sucess = validateForm();
+
+    if (sucess === true) {
+      login(formData);
+    }
     console.log("Hello")
   }
  
@@ -95,16 +112,16 @@ function LoginPage() {
             <button
               type="submit"
               className=" btn btn-primary  w-full"
-              // disabled={isSigningUp}
+              disabled={isLoggingIng}
             >
-              {/* {isSigningUp ? (
+              {isLoggingIng ? (
                 <>
                   <Loader2 className=" size-5 animate-spin" />
                   Loading.....
                 </>
               ) : (
                 "Create Account"
-              )} */}
+              )}
               Login
             </button>
           </form>

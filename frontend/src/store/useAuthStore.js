@@ -6,7 +6,9 @@ import toast from 'react-hot-toast';
 export const useAuthStore = create(persist((set, get) => ({
     authUser: null,  // ✅ Ensure this matches App.jsx usage
     isSigningUp: false,
+    isLoggingIng:false,
     isCheckingAuth: true,
+    isUpdatingProfile:false,
 
     checkAuth: async () => {
         try {
@@ -39,6 +41,39 @@ export const useAuthStore = create(persist((set, get) => ({
             set({ isSigningUp: false });
         }
     },
+    login: async (data) => {
+        set({ isLoggingIng: true });
+        try {
+            const res = await axiosIntance.post("/auth/login", data);
+
+            console.log("Login response=->", res.data);
+
+            set({ authUser: res.data });
+
+            toast.success("Logged in Sucessfull");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Signup failed!");
+        } finally {
+            set({ isLoggingIng: false });
+        }
+    },
+
+    updateProfile: async (data) => {
+        set({ isUpdatingProfile: true });
+        try {
+            const res = await axiosIntance.put("/auth/update-profile", data);
+            console.log("Update response-->", res.data);
+set({authUser:res.data})
+            toast.success("Profile update sucessfully!!");
+
+        }catch (error) {
+            toast.error(error.response?.data?.message || "Profile Updation fail!");
+        } finally {
+            set({ isUpdatingProfile: false });
+        }
+
+        
+    },
 
     logout: async () => {
         try {
@@ -51,9 +86,7 @@ export const useAuthStore = create(persist((set, get) => ({
         }
     },
 
-    login: async () => {
-        
-    }
+    
 }), {
     name: "auth-store",
     getStorage: () => localStorage,  // ✅ Ensure persistence

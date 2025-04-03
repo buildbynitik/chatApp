@@ -13,7 +13,8 @@ console.log("Prt",process.env.PORT)
 const PORT = process.env.PORT || 5001;
 
 
-app.use(express.json());
+app.use(express.json({ limit: "Infinity" }));
+app.use(express.urlencoded({ extended: true, limit: "Infinity" }));
 app.use(cookieParser());
 app.use(cors({
     origin: "http://localhost:5173",
