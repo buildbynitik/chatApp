@@ -8,7 +8,8 @@ export const useAuthStore = create(persist((set, get) => ({
     isSigningUp: false,
     isLoggingIng:false,
     isCheckingAuth: true,
-    isUpdatingProfile:false,
+    isUpdatingProfile: false,
+     onlineUser:[],
 
     checkAuth: async () => {
         try {
@@ -57,7 +58,11 @@ export const useAuthStore = create(persist((set, get) => ({
             set({ isLoggingIng: false });
         }
     },
-
+    setOnlineUser: (users) => {
+    console.log("🔹 setOnlineUser called with:", users);  // ✅ Check if function is being executed
+    set({ onlineUser: users });
+    console.log("🔹 Updated Zustand Online Users:", get().onlineUser);  // ✅ Check if state updates
+},
     updateProfile: async (data) => {
         set({ isUpdatingProfile: true });
         try {
@@ -85,6 +90,7 @@ set({authUser:res.data})
             toast.error(error.response.data.message);
         }
     },
+    
 
     
 }), {

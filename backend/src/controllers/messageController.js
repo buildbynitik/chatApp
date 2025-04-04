@@ -2,6 +2,7 @@ import cloudinary from "../lib/cloudinary.js";
 import Message from "../models/messageModel.js";
 import User from "../models/userModels.js";
 
+
 export const getUserForSidebar = async(req,res) => {
     try {
         const loggedInUserId = req.user._id;
@@ -43,11 +44,14 @@ export const sendmessage =async (req,res) => {
         const { text, image } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
+        console.log("Incomng message data", { text, receiverId, senderId });
         let imageUrl;
 
         if (image) {
+            console.log("Upoading image");
             const uploadResponse = await cloudinary.uploader.upload(image);
             imageUrl = uploadResponse.secure_url;
+            console.log("image uploaded", imageUrl);
         }
 
         const newMessage = new Message({
@@ -58,6 +62,7 @@ export const sendmessage =async (req,res) => {
             
 
         })
+        console.log("message object",newMessage)
 
         await newMessage.save();
 
