@@ -6,7 +6,8 @@ import { connectDB } from './lib/db.js';
 import cookieParser from 'cookie-parser';
 import messageRoute from './routes/messageRoute.js'
 import cors from 'cors';
-import { app,server } from './lib/socket.js';
+import { app, server } from './lib/socket.js';
+import path from 'path';
 
 
 
@@ -14,6 +15,8 @@ import { app,server } from './lib/socket.js';
 dotenv.config();
 console.log("Prt",process.env.PORT)
 const PORT = process.env.PORT || 5001;
+
+const _dirname = path.resolve();
 
 
 app.use(express.json({ limit: "Infinity" }));
@@ -25,7 +28,15 @@ app.use(cors({
 }));
 
 app.use("/api/auth", authRoute);
-app.use("/api/messages",messageRoute)
+app.use("/api/messages", messageRoute)
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(_dirname, "../../frontend/dist")))
+    
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(_dirname,"../../frontend","dist","index.html"))
+    })
+}
 
 server.listen(PORT, () => {
     console.log(`App is running on port ${PORT}`);
