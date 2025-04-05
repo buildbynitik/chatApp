@@ -4,9 +4,10 @@ import { getMessages, getUserForSidebar, sendmessage } from '../controllers/mess
 
 const router = express.Router(); 
 
-router.get("/users", ProtectRoute, getUserForSidebar);
-router.get("/:id", ProtectRoute, getMessages);
-router.post("/send/:id",ProtectRoute,sendmessage)
+router.get("/users", ProtectRoute, getUserForSidebar);   // ✅ More specific route first
+router.get("/:id", ProtectRoute, getMessages);           // ✅ Less specific route second
+router.post("/send/:id", ProtectRoute, sendmessage);     // ✅ OK
+
 
 
 export default router;
