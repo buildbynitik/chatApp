@@ -16,9 +16,12 @@ function App() {
   const authUser = useAuthStore((state) => state.authUser); // ✅ Corrected state usage
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
+  const onlineUser = useAuthStore((state) => state.onlineUser);
+  console.log("Onlne-",onlineUser)
 const {theme}=useThemeStore()
   useEffect(() => {
     checkAuth();
+     useAuthStore.getState().checkAuth();
   }, [checkAuth]);
 
   console.log("APP auth user", { authUser });

@@ -1,4 +1,5 @@
 import cloudinary from "../lib/cloudinary.js";
+import { getReciverSocketId, io } from "../lib/socket.js";
 import Message from "../models/messageModel.js";
 import User from "../models/userModels.js";
 
@@ -44,14 +45,14 @@ export const sendmessage =async (req,res) => {
         const { text, image } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
-        console.log("Incomng message data", { text, receiverId, senderId });
+        
         let imageUrl;
 
         if (image) {
             console.log("Upoading image");
             const uploadResponse = await cloudinary.uploader.upload(image);
             imageUrl = uploadResponse.secure_url;
-            console.log("image uploaded", imageUrl);
+            
         }
 
         const newMessage = new Message({
@@ -62,11 +63,16 @@ export const sendmessage =async (req,res) => {
             
 
         })
-        console.log("message object",newMessage)
+       
 
         await newMessage.save();
 
         // todo:realtime functionality goes here > socket.io
+        const receiverSocketId = getReciverSocketId(receiverId)
+        
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+        }
 
         res.status(201).json(newMessage);
 

@@ -14,12 +14,17 @@ function ChatContainer() {
     isMessageLoading,
     setSelectedUser,
     selectedUser,
+    suscribeToMessages,
+    unsucribeToMessages,
   } = useChatStore();
   const authUser = useAuthStore((store) => store.authUser);
-  console.log("get message in frontend-->", messages);
+  // console.log("get message in frontend-->", messages);
 
   useEffect(() => {
     getMessages(selectedUser._id);
+    suscribeToMessages()
+
+    return()=> unsucribeToMessages();
   }, []);
   if (isMessageLoading) {
     return (
@@ -75,7 +80,7 @@ function ChatContainer() {
           );
         })}
       </div>
-      <p>Messages....</p>
+    
       <MessageInput />
     </div>
   );

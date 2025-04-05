@@ -8,13 +8,17 @@ import { useAuthStore } from "../store/useAuthStore";
 function Sidebar() {
   const { getUsers, users, selectedUser, setSelectedUser, isUserLoading } =
         useChatStore();
-    console.log("Get data and user",users)
+    
     const onlineUser = useAuthStore((store) => store.onlineUser);
-    console.log("Onlineuser=>",onlineUser)
+  
+  
+  const authUser = useAuthStore((store) => store.authUser);
 
   useEffect(() => {
-   getUsers() //  ✅ Direct access = no re-creation
-  }, []);
+    if (authUser) {
+      getUsers(); // Only fetch users when authUser is available
+    }
+  }, [authUser]); 
 
   if (isUserLoading) {
     return <SideSkaleton />;

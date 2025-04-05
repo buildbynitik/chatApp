@@ -16,10 +16,10 @@ function MessageInput() {
             toast.error("Please select a image file");
             return;
       }
-      console.log("File ->", file);
+      // console.log("File ->", file);
         const reader = new FileReader();
       reader.onload = () => {
-        console.log("Reader", reader.result);
+        // console.log("Reader", reader.result);
             setImagePrev(reader.result);
 
         }
@@ -37,10 +37,10 @@ function MessageInput() {
     const handleSendMessage = async (e) => {
       e.preventDefault();
 
-      console.log("🔹 Sending Message Data:", {
-        text: text.trim(),
-        image: imagePrev, // ✅ Make sure it's lowercase "image"
-      });
+      // console.log("🔹 Sending Message Data:", {
+      //   text: text.trim(),
+      //   image: imagePrev, // ✅ Make sure it's lowercase "image"
+      // });
 
       if (!text.trim() && !imagePrev) {
         console.log("⚠️ No text or image to send.");
@@ -53,7 +53,7 @@ function MessageInput() {
           image: imagePrev, // ✅ Change "Image" to "image"
         });
 
-        console.log("✅ Message sent successfully!");
+        // console.log("✅ Message sent successfully!");
         setText("");
         setImagePrev(null);
         if (fileInputref.current) fileInputref.current.value = "";

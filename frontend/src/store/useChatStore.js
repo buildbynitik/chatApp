@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
-import {axiosIntance} from '../lib/axios'  // ✅ Fixed typo
+import { axiosIntance } from '../lib/axios'  // ✅ Fixed typo'
+import { useAuthStore } from './useAuthStore';
 
 export const useChatStore = create((set,get) => ({
     messages: [],
@@ -14,9 +15,9 @@ export const useChatStore = create((set,get) => ({
    getUsers: async () => {
     set({ isUserLoading: true });
     try {
-        console.log("Fetching users..."); // ✅ Log API call
+        // console.log("Fetching users..."); // ✅ Log API call
         const res = await axiosIntance.get("/messages/users");
-        console.log("Fetched users:", res.data); // ✅ Log the response
+        // console.log("Fetched users:", res.data); // ✅ Log the response
         set({ users: res.data });
     } catch (error) {
         toast.error(error.response?.data?.message || error.message);
@@ -36,7 +37,7 @@ export const useChatStore = create((set,get) => ({
 
     try {
         const res = await axiosIntance.get(`/messages/${userId}`);
-        console.log("Fetched message data from backend:", res.data);
+        // console.log("Fetched message data from backend:", res.data);
 
         // ✅ Set the messages
         set({ messages: res.data });
@@ -52,22 +53,38 @@ export const useChatStore = create((set,get) => ({
 
 
     sendMessage: async (messageData) => {
-        console.log("Send msg called-", messageData);
-
-        const { selectedUser, message } = get();
-        if (!selectedUser) {
+    const { selectedUser, messages } = get();
+    if (!selectedUser) {
         toast.error("No user selected");
         return;
     }
-        try {
-            const res = await axiosIntance.post(`/messages/send/${selectedUser._id}`, messageData);
-            console.log("messge data-", res.data);
 
-            set({ message: [...message, res.data] })
-            console.log("Messages->",message )
-        } catch (error) {
-            toast.error(error.response?.data?.message || error.message);
-        } 
+    try {
+        const res = await axiosIntance.post(`/messages/send/${selectedUser._id}`, messageData);
+        set({ messages: [...(messages || []), res.data] });
+    } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+    }
+},
+
+    suscribeToMessages: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+
+        socket.on("newMessage", (newMessage) => {
+            const isMessageSetFromUser = newMessage.senderId === selectedUser._id;
+            if (!isMessageSetFromUser) return;
+        set({
+            messages: [...get().messages, newMessage]
+        });
+    });
+},
+
+    unsucribeToMessages: () => {
+        const socket = useAuthStore.getState().socket;
+        socket.off("newMessage")
     },
 
     // ✅ Function to select a user for chat
