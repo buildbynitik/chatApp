@@ -50,7 +50,7 @@ function Navbar() {
           </div>
         </div>
       </div>
-      Navbar
+      
     </header>
   );
 }

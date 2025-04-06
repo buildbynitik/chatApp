@@ -111,7 +111,7 @@ function MessageInput() {
                   <Send size={22}/>
               </button>
       </form>
-      Input
+     
     </div>
   );
 }
