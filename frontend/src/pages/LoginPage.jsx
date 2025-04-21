@@ -120,7 +120,7 @@ function LoginPage() {
                   Loading.....
                 </>
               ) : (
-                "Create Account"
+                ""
               )}
               Login
             </button>
